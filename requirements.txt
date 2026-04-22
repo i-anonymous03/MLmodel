@@ -4,4 +4,5 @@ python-multipart
 deepface
 opencv-python-headless
 tensorflow==2.15.0
+tf-keras
 pillow
