@@ -7,6 +7,7 @@ from deepface import DeepFace
 st.set_page_config(page_title="Taaranaa Mood Scanner", page_icon="🎭")
 
 st.title("Taaranaa Mood Scanner: Passive Emotion Monitoring")
+st.caption("Powered by Deep Learning CNNs trained on the Kaggle FER-2013 (Facial Expression Recognition) Dataset.")
 
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
