@@ -56,6 +56,12 @@ document.addEventListener('DOMContentLoaded', () => {
         reader.onload = (e) => {
             imagePreview.src = e.target.result;
             imagePreview.classList.remove('hidden');
+            
+            // Add loaded class for animation
+            setTimeout(() => {
+                imagePreview.classList.add('loaded');
+            }, 50);
+            
             uploadContent.classList.add('hidden');
             
             // Upload to backend
@@ -106,11 +112,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // Sort breakdown by value descending
         const sorted = Object.entries(breakdown).sort((a, b) => b[1] - a[1]);
 
-        sorted.forEach(([emotion, value]) => {
+        sorted.forEach(([emotion, value], index) => {
             const percentage = Math.max(0.5, value).toFixed(1); // Min 0.5% for visibility
             
             const row = document.createElement('div');
             row.className = 'chart-row';
+            // Staggered animation delay
+            row.style.animationDelay = `${index * 0.1}s`;
             
             row.innerHTML = `
                 <div class="chart-label">${emotion}</div>
@@ -129,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
             bars.forEach(bar => {
                 bar.style.width = bar.getAttribute('data-width');
             });
-        }, 100);
+        }, 150);
     }
 
     toggleBreakdownBtn.addEventListener('click', (e) => {

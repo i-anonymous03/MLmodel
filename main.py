@@ -54,6 +54,11 @@ async def analyze_image(file: UploadFile = File(...)):
             result = results
             
         emotions_dict = result.get('emotion', {})
+        
+        # DeepFace returns numpy float32 values which are not JSON serializable. 
+        # Convert them to native python floats:
+        emotions_dict = {k: float(v) for k, v in emotions_dict.items()}
+        
         complex_emotion = derive_complex_emotion(emotions_dict)
         
         return JSONResponse(content={
