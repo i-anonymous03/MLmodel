@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taaranaa Mood Scanner</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="background-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <div class="container glass-panel">
+        <header>
+            <h1>Taaranaa <span>Mood Scanner</span></h1>
+            <p class="subtitle">Passive Emotion Monitoring</p>
+            <p class="caption">Powered by Deep Learning CNNs trained on the Kaggle FER-2013 Dataset.</p>
+        </header>
+
+        <main>
+            <div class="upload-zone" id="uploadZone">
+                <input type="file" id="fileInput" accept="image/jpeg, image/png, image/jpg" hidden>
+                <div class="upload-content">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="upload-icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                    <p>Drag & Drop an image here</p>
+                    <span>or click to browse</span>
+                </div>
+                <img id="imagePreview" class="image-preview hidden" alt="Preview">
+            </div>
+
+            <div class="loader hidden" id="loader">
+                <div class="spinner"></div>
+                <p>Analyzing emotion...</p>
+            </div>
+
+            <div class="result-container hidden" id="resultContainer">
+                <h2>Detected Emotion:</h2>
+                <div class="emotion-badge" id="emotionBadge">Unknown</div>
+                
+                <button class="toggle-btn" id="toggleBreakdownBtn">View Breakdown</button>
+                
+                <div class="breakdown-container hidden" id="breakdownContainer">
+                    <div class="chart-wrapper" id="chartWrapper">
+                        <!-- Bars injected by JS -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="error-container hidden" id="errorContainer">
+                <p id="errorMessage"></p>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

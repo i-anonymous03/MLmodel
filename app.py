@@ -4,6 +4,36 @@ import os
 from PIL import Image
 from deepface import DeepFace
 
+def derive_complex_emotion(emotion_dict):
+    """
+    Blends the top 2 emotions if the secondary emotion has a significant probability.
+    Provides a richer set of 10+ emotions.
+    """
+    sorted_emotions = sorted(emotion_dict.items(), key=lambda item: item[1], reverse=True)
+    primary_emotion, primary_score = sorted_emotions[0]
+    secondary_emotion, secondary_score = sorted_emotions[1]
+    
+    # Threshold for considering the secondary emotion (e.g., > 10%)
+    if secondary_score < 10.0:
+        return primary_emotion.capitalize()
+        
+    emotions_set = {primary_emotion, secondary_emotion}
+    
+    # Blending Logic
+    if {"happy", "surprise"}.issubset(emotions_set): return "Excited"
+    elif {"angry", "sad"}.issubset(emotions_set): return "Frustrated"
+    elif {"surprise", "neutral"}.issubset(emotions_set): return "Confused"
+    elif {"fear", "surprise"}.issubset(emotions_set): return "Alarmed"
+    elif {"disgust", "angry"}.issubset(emotions_set): return "Contemptuous"
+    elif {"sad", "happy"}.issubset(emotions_set): return "Nostalgic / Bittersweet"
+    elif {"fear", "sad"}.issubset(emotions_set): return "Anxious"
+    elif {"fear", "angry"}.issubset(emotions_set): return "Hostile"
+    elif {"happy", "neutral"}.issubset(emotions_set): return "Content"
+    elif {"sad", "neutral"}.issubset(emotions_set): return "Melancholic"
+    elif {"disgust", "sad"}.issubset(emotions_set): return "Bitter"
+        
+    return f"{primary_emotion.capitalize()} (with hints of {secondary_emotion})"
+
 st.set_page_config(page_title="Taaranaa Mood Scanner", page_icon="🎭")
 
 st.title("Taaranaa Mood Scanner: Passive Emotion Monitoring")
@@ -33,11 +63,16 @@ if uploaded_file is not None:
             else:
                 result = results
                 
-            dominant_emotion = result.get('dominant_emotion', 'Unknown')
+            emotions_dict = result.get('emotion', {})
+            complex_emotion = derive_complex_emotion(emotions_dict)
             
             # Display the result with a clean UI
-            st.success(f"### Detected Emotion: {dominant_emotion.capitalize()} 🎭")
+            st.success(f"### Detected Emotion: **{complex_emotion}** 🎭")
             
+            # Optionally show the raw breakdown
+            with st.expander("Show Emotion Breakdown"):
+                st.bar_chart(emotions_dict)
+                
         except Exception as e:
             st.error(f"An error occurred during analysis: {e}")
         finally:
