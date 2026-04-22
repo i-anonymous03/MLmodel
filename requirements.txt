@@ -3,5 +3,4 @@ uvicorn
 python-multipart
 deepface
 opencv-python-headless
-tf-keras
 pillow
