@@ -155,3 +155,70 @@ document.addEventListener('DOMContentLoaded', () => {
         errorContainer.classList.remove('hidden');
     }
 });
+
+// --- Antigravity Background Animation Engine ---
+const canvas = document.getElementById('antigravity-canvas');
+if (canvas) {
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let particles = [];
+
+    function resize() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    class Particle {
+        constructor() {
+            this.x = Math.random() * width;
+            this.y = Math.random() * height;
+            this.size = Math.random() * 2 + 0.5;
+            this.speedX = (Math.random() - 0.5) * 0.4;
+            this.speedY = Math.random() * -0.8 - 0.1;
+            const hue = 200 + Math.random() * 50; 
+            this.color = `hsla(${hue}, 100%, 70%, ${Math.random() * 0.5 + 0.2})`;
+        }
+        update() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+            if (this.y + this.size < 0) {
+                this.y = height + this.size;
+                this.x = Math.random() * width;
+            }
+            if (this.x > width + this.size) this.x = -this.size;
+            if (this.x < -this.size) this.x = width + this.size;
+        }
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            ctx.shadowBlur = 12;
+            ctx.shadowColor = this.color;
+            ctx.fill();
+        }
+    }
+
+    function initParticles() {
+        particles = [];
+        const particleCount = Math.floor((width * height) / 12000); 
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+    }
+
+    function animateParticles() {
+        ctx.clearRect(0, 0, width, height);
+        particles.forEach(particle => {
+            particle.update();
+            particle.draw();
+        });
+        requestAnimationFrame(animateParticles);
+    }
+
+    initParticles();
+    animateParticles();
+}
