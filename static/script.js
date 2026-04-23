@@ -163,6 +163,23 @@ if (canvas) {
     let width, height;
     let particles = [];
 
+    // Track mouse position and interaction radius
+    let mouse = {
+        x: null,
+        y: null,
+        radius: 150 
+    };
+
+    window.addEventListener('mousemove', function(event) {
+        mouse.x = event.x;
+        mouse.y = event.y;
+    });
+
+    window.addEventListener('mouseout', function() {
+        mouse.x = null;
+        mouse.y = null;
+    });
+
     function resize() {
         width = window.innerWidth;
         height = window.innerHeight;
@@ -176,15 +193,40 @@ if (canvas) {
         constructor() {
             this.x = Math.random() * width;
             this.y = Math.random() * height;
-            this.size = Math.random() * 2 + 0.5;
-            this.speedX = (Math.random() - 0.5) * 0.4;
-            this.speedY = Math.random() * -0.8 - 0.1;
+            // Increased size for better visibility
+            this.size = Math.random() * 3 + 1.5; 
+            this.baseSpeedX = (Math.random() - 0.5) * 0.5;
+            this.baseSpeedY = Math.random() * -1 - 0.2;
+            this.speedX = this.baseSpeedX;
+            this.speedY = this.baseSpeedY;
             const hue = 200 + Math.random() * 50; 
-            this.color = `hsla(${hue}, 100%, 70%, ${Math.random() * 0.5 + 0.2})`;
+            // Increased opacity (0.6 to 1.0) and brightness for pop
+            this.color = `hsla(${hue}, 100%, 75%, ${Math.random() * 0.4 + 0.6})`;
         }
         update() {
+            // Mouse Repel Logic
+            if (mouse.x != null && mouse.y != null) {
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < mouse.radius) {
+                    const forceDirectionX = dx / distance;
+                    const forceDirectionY = dy / distance;
+                    // Calculate force so it pushes harder the closer you get
+                    const force = (mouse.radius - distance) / mouse.radius;
+                    const directionX = forceDirectionX * force * 5;
+                    const directionY = forceDirectionY * force * 5;
+                    
+                    this.x -= directionX;
+                    this.y -= directionY;
+                }
+            }
+
             this.x += this.speedX;
             this.y += this.speedY;
+
+            // Wrap around screen
             if (this.y + this.size < 0) {
                 this.y = height + this.size;
                 this.x = Math.random() * width;
@@ -196,7 +238,8 @@ if (canvas) {
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
             ctx.fillStyle = this.color;
-            ctx.shadowBlur = 12;
+            // Intensified glow
+            ctx.shadowBlur = 18; 
             ctx.shadowColor = this.color;
             ctx.fill();
         }
@@ -204,7 +247,8 @@ if (canvas) {
 
     function initParticles() {
         particles = [];
-        const particleCount = Math.floor((width * height) / 12000); 
+        // Spawn slightly more particles
+        const particleCount = Math.floor((width * height) / 9000); 
         for (let i = 0; i < particleCount; i++) {
             particles.push(new Particle());
         }
