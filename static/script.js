@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('file', file);
 
         try {
-            const response = await fetch('/analyze', {
+            const response = await fetch(window.location.origin + '/analyze', {
                 method: 'POST',
                 body: formData
             });

@@ -1,7 +1,7 @@
 import os
 import tempfile
 from fastapi import FastAPI, File, UploadFile
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from deepface import DeepFace
 
@@ -78,6 +78,10 @@ async def analyze_image(file: UploadFile = File(...)):
                 os.remove(temp_file_path)
             except Exception:
                 pass
+
+@app.get("/crop.html")
+async def serve_crop_page():
+    return FileResponse("static/crop.html")
 
 # Serve static files for the frontend
 app.mount("/", StaticFiles(directory="static", html=True), name="static")
